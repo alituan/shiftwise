@@ -57,10 +57,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
   Widget build(BuildContext context) {
     final type = context.designType;
     final colors = context.designColors;
-    final signedIn = switch (ref.watch(authUserProvider)) {
-      AsyncData(value: final user?) => true,
-      _ => false,
-    };
+    final authAsync = ref.watch(authUserProvider);
+    final signedIn =
+        authAsync is AsyncData<AuthUser?> && authAsync.value != null;
     if (signedIn && !_bouncedBack) {
       _bouncedBack = true;
       // UX-only bounce: signed-in users have nothing to do here.
