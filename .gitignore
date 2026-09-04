@@ -52,3 +52,5 @@ app.*.map.json
 # golden_toolkit failure diff output from failed runs
 test/golden/failures/
 .hoplite/archive/
+rules-tests/node_modules/
+*-debug.log

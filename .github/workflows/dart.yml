@@ -28,11 +28,14 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Install rules-test dependencies
+        run: npm --prefix rules-tests install
+
       - name: Verify formatting
         run: dart format --output=none --set-exit-if-changed .
 
       - name: Analyze project source
         run: flutter analyze
 
-      - name: Run tests (Firebase Auth emulator up)
-        run: firebase emulators:exec --only auth -- "flutter test"
+      - name: Run tests (Firebase Auth + Firestore + Storage emulators)
+        run: firebase emulators:exec --only auth,firestore,storage -- "flutter test && npm --prefix rules-tests test"

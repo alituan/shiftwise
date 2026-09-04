@@ -1,0 +1,153 @@
+rules_version = '2';
+
+// Deny-by-default Firestore rules — Firestore rules plus Cloud Functions are
+// this app's entire security boundary (docs/threat-model.md).
+//
+// Client-writable surface in this step: a user's own shift documents only.
+// Everything server-owned is Cloud Functions territory — entitlements,
+// usage counters, parse-job transitions, calculation snapshots, rule packs,
+// webhook events (docs/architecture/data-model.md, AGENTS.md hard rules).
+// Every rule change ships with emulator tests in the same commit
+// (rules-tests/, docs/testing.md).
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function shiftSchemaValid(data) {
+      return data.keys().hasAll([
+              'jobId',
+              'startUtc',
+              'endUtc',
+              'timeZone',
+              'localWorkDate',
+              'role',
+              'location',
+              'paidBreakMinutes',
+              'unpaidBreakMinutes',
+              'source',
+              'sourceParseJobId',
+              'reviewStatus',
+              'revision',
+              'createdAt',
+              'updatedAt',
+            ])
+          && data.keys().hasOnly([
+              'jobId',
+              'startUtc',
+              'endUtc',
+              'timeZone',
+              'localWorkDate',
+              'role',
+              'location',
+              'paidBreakMinutes',
+              'unpaidBreakMinutes',
+              'source',
+              'sourceParseJobId',
+              'reviewStatus',
+              'revision',
+              'createdAt',
+              'updatedAt',
+            ])
+          && data.jobId is string
+          && data.jobId.size() > 0
+          && data.startUtc is timestamp
+          && data.endUtc is timestamp
+          && data.endUtc > data.startUtc
+          && data.timeZone is string
+          && data.timeZone.matches('^[A-Za-z0-9_+/-]+$')
+          && data.localWorkDate is string
+          && data.localWorkDate.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+          && (data.role is string || data.role == null)
+          && (data.location is string || data.location == null)
+          && data.paidBreakMinutes is int
+          && data.paidBreakMinutes >= 0
+          && data.unpaidBreakMinutes is int
+          && data.unpaidBreakMinutes >= 0
+          && data.source in ['manual', 'scanned']
+          && (
+            (data.source == 'manual' && data.sourceParseJobId == null)
+              || (data.source == 'scanned' && data.sourceParseJobId is string)
+          )
+          && data.reviewStatus == 'confirmed'
+          && data.revision is int
+          && data.revision >= 1
+          && data.createdAt is timestamp
+          && data.updatedAt is timestamp;
+    }
+
+    // Server-owned collections: denied to every client, signed in or not.
+    // Cloud Functions write these with administrative credentials.
+    match /entitlements/{uid} {
+      allow read, write: if false;
+    }
+    match /usage/{id} {
+      allow read, write: if false;
+    }
+    match /rulePacks/{id} {
+      allow read, write: if false;
+    }
+    match /webhookEvents/{id} {
+      allow read, write: if false;
+    }
+
+    match /users/{uid} {
+      function isOwner() {
+        return request.auth != null && request.auth.uid == uid;
+      }
+
+      // Profile document: owner-readable, owner-creatable with a minimal
+      // validated shape. Updates and deletes arrive with the sync and
+      // account-deletion steps, each with their own emulator tests.
+      allow read: if isOwner();
+      allow create: if isOwner()
+          && request.resource.data.keys().hasAll(['createdAt', 'email'])
+          && request.resource.data.keys().hasOnly(['createdAt', 'email'])
+          && request.resource.data.email is string
+          && request.resource.data.createdAt == request.time;
+      allow update, delete: if false;
+
+      // Jobs and rate versions: readable by the owner; client writes open
+      // with the sync step (free tier is one job, created on first sync).
+      match /jobs/{jobId} {
+        allow read: if isOwner();
+        allow write: if false;
+        match /rateVersions/{rateId} {
+          allow read: if isOwner();
+          allow write: if false;
+        }
+      }
+
+      // Parse jobs: readable by the owner, but authority stays server-side —
+      // clients never write transitions (AGENTS.md hard rule).
+      match /parseJobs/{parseJobId} {
+        allow read: if isOwner();
+        allow write: if false;
+      }
+
+      // Calculation snapshots: server-owned writes, owner-readable for pay
+      // traceability (docs/design/screens.md, Pay).
+      match /calculationSnapshots/{id} {
+        allow read: if isOwner();
+        allow write: if false;
+      }
+
+      // Shifts: the one client-writable tree. Revision is monotonic,
+      // audit timestamps are server-set, and the schema is exact.
+      // updatedBy (conflict-resolution spec) is rejected here as an
+      // unknown field until the write-guard step ships with its tests.
+      match /shifts/{shiftId} {
+        allow read: if isOwner();
+        allow create: if isOwner()
+            && shiftSchemaValid(request.resource.data)
+            && request.resource.data.revision == 1
+            && request.resource.data.createdAt == request.time
+            && request.resource.data.updatedAt == request.time;
+        allow update: if isOwner()
+            && shiftSchemaValid(request.resource.data)
+            && request.resource.data.revision == resource.data.revision + 1
+            && request.resource.data.createdAt == resource.data.createdAt
+            && request.resource.data.updatedAt == request.time;
+        allow delete: if isOwner();
+      }
+    }
+  }
+}

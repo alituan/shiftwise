@@ -41,3 +41,15 @@ the emulator — it needs a device or web target (see the test file header),
 not the plain `flutter test` VM. The `demo-shiftwise` project id comes from
 `.firebaserc`; nothing in it is secret. When a real Firebase project exists,
 regenerate `lib/firebase_options.dart` with `flutterfire configure`.
+
+### Firestore and Storage security rules
+
+Rules live in `firebase/` and are the app's entire security boundary —
+every change ships with hostile emulator tests in the same commit
+(`docs/testing.md`). Run them:
+
+    firebase emulators:exec --only firestore,storage -- "npm --prefix rules-tests test"
+
+The suite attacks the rules through direct SDK calls (cross-user access,
+unauthenticated access, server-owned collections, schema and revision
+invariants), never through the app UI.
