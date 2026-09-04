@@ -6,10 +6,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shiftwise/app/theme/theme.dart';
 import 'package:shiftwise/domain/schedule/shift.dart';
+import 'package:shiftwise/features/auth/state/auth.dart';
 import 'package:shiftwise/features/schedule/schedule_screen.dart';
 import 'package:shiftwise/features/schedule/state/shifts.dart';
 import 'package:shiftwise/features/shift_edit/shift_edit_screen.dart';
 
+import '../../support/fake_auth_gateway.dart';
 import '../../support/test_shifts.dart';
 
 Widget pumpApp({List<Shift> seeds = const []}) {
@@ -152,5 +154,29 @@ void main() {
     await tester.tap(find.text('Cancel'));
     await tester.pumpAndSettle();
     expect(find.text('Cafe'), findsOneWidget);
+  });
+
+  testWidgets('account action opens the account sheet', (tester) async {
+    final fakeAuth = FakeAuthGateway();
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [authGatewayProvider.overrideWithValue(fakeAuth)],
+        child: MaterialApp.router(
+          theme: ShiftWiseThemes.light,
+          routerConfig: GoRouter(
+            routes: [
+              GoRoute(
+                path: '/',
+                builder: (_, _) => ScheduleScreen(now: testNow),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.byTooltip('Account'));
+    await tester.pumpAndSettle();
+    expect(find.text('Account'), findsOneWidget);
+    expect(find.text('Guest'), findsOneWidget);
   });
 }

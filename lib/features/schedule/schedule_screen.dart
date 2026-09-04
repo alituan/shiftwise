@@ -12,6 +12,7 @@ import 'package:shiftwise/app/theme/tokens.dart';
 import 'package:shiftwise/domain/money/format.dart';
 import 'package:shiftwise/domain/pay/estimate.dart';
 import 'package:shiftwise/domain/schedule/shift.dart';
+import 'package:shiftwise/features/auth/account_sheet.dart';
 import 'package:shiftwise/features/schedule/state/shifts.dart';
 import 'package:shiftwise/features/schedule/widgets/hero_countdown.dart';
 import 'package:shiftwise/shared/time_format.dart';
@@ -61,8 +62,13 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Schedule'),
-        actions: const [
-          Padding(
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person_outline),
+            tooltip: 'Account',
+            onPressed: () => showAccountSheet(context),
+          ),
+          const Padding(
             padding: EdgeInsets.only(right: Tokens.spaceSm),
             child: SyncIndicator(state: SyncState.offline),
           ),
