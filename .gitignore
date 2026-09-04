@@ -46,3 +46,8 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Hoplite chat attachments (runtime artifacts, not source)
+.hoplite/attachments/
+# golden_toolkit failure diff output from failed runs
+test/golden/failures/
