@@ -24,6 +24,8 @@ Two palettes, same semantic roles. Every token below has a light and dark value 
 
 **Rule: color is never the only status signal.** Every confirmed/concern/failed/syncing state needs an icon or label alongside the color — see `StatusChip` component in `docs/design/screens.md`.
 
+**Rule: status colors are icon/large-text pairings only — never small body text.** `colorConcern`, `colorConfirmed`, and `colorCritical` are specified against the 3:1 large-text/icon threshold on `colorSurface`, not the 4.5:1 small-text threshold (`colorConcern` on light `colorSurface` measures 4.27:1). Never set body or label text in a status color; a status-colored element (icon, chip tint, large text) must always carry an adjacent `colorInk` label so meaning survives contrast limits, glare, and color-vision deficiencies.
+
 **Contrast requirement:** every text-on-surface and icon-on-surface pairing meets WCAG AA (4.5:1 normal text, 3:1 large text/icons) in **both** palettes independently — don't derive dark-mode contrast by assumption, check it directly, since simply lightening a hue doesn't guarantee the ratio holds.
 
 **Theme source:** system default (`MediaQuery.platformBrightnessOf`) on first launch, with a manual override in Settings. Persist the override locally; don't re-derive from system brightness on every launch if the user has explicitly chosen one.

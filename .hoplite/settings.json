@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "ports": {"preview": 3000, "additional": {}},
+  "scripts": {
+    "setup": {"enabled": true, "command": "mise install && flutter pub get"},
+    "run": {"enabled": true, "command": "flutter run -d web-server --web-port 3000 --web-hostname 0.0.0.0"},
+    "archive": {"enabled": true, "command": null},
+    "check": {"enabled": true, "command": "flutter analyze && dart format --output=none --set-exit-if-changed . && flutter test"}
+  },
+  "mcpServers": []
+}

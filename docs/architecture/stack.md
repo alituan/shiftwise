@@ -12,13 +12,17 @@ Flutter replaces the original Next.js web plan entirely — one codebase, iOS/An
 | Backend | Firebase: Auth, Firestore, Storage, Functions (2nd gen), FCM | Unchanged from original web plan |
 | Local persistence | Firestore offline cache by default. Only add `Isar`/`Hive` if the cache genuinely can't cover a case (e.g. complex unsynced-edit queue) | Extra local DB = extra sync-bug surface. Default answer to "do we need this" is no |
 | Money | `decimal` package. Never raw `double` for currency | Dart's `double` is binary float, same footgun as JS |
-| Forms | `flutter_form_builder` + validators mirroring Cloud Functions schema rules | Keep validation logic conceptually shared even if not literally shared code |
+| Forms | Plain Material `Form`/`TextFormField`/`FormField` — see deviation record | Validation still mirrors Cloud Functions schema rules; stays on the token-driven `ThemeData` (2026-09-04 deviation below) |
 | Push | `firebase_messaging` (server-triggered) + `flutter_local_notifications` (scheduled, offline-safe) | Use local for "shift starts in 30 min" (deterministic); FCM for server events like "import finished" |
 | Images | `image_picker` + `image_cropper` + `image` (re-encode/strip EXIF) | Mirrors browser crop/re-encode pipeline from AI-import spec |
 | Routing | `go_router` | Declarative, consistent route guards across platforms |
 | Testing | `flutter_test`, `mocktail`, Firebase emulator integration tests, `golden_toolkit` | Golden tests protect the design system from silent drift over a long build |
 | CI/CD | GitHub Actions (`flutter test`, `flutter analyze`, per-platform build) + Codemagic/Fastlane for store deploy | |
 | Monitoring | Firebase Crashlytics + Sentry Flutter SDK | Same redaction requirements as original plan — see `docs/threat-model.md` |
+
+## Deviation record
+
+- **2026-09-04 — `flutter_form_builder` → plain Material fields (Phase 1).** v11 builds on the `material_ui` component fork, whose `InputDecoration` is a different class from `flutter/material`'s — forms built on it cannot consume the token-driven `ThemeData` every other surface maps through, so it was removed before any form shipped. Direct packages added instead: `uuid` (client-side shift ids), `intl` (en-US wall-clock formatting until locale Settings exist), `meta` (`@immutable` on domain models).
 
 ## Repository structure
 
