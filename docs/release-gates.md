@@ -1,0 +1,20 @@
+# Release Gates
+
+- [ ] Segment, jurisdiction, currency, and claims approved (`docs/scope.md`)
+- [ ] App-store/billing-provider eligibility verified (`docs/architecture/billing.md`)
+- [ ] AI parsing benchmark meets Phase 0 target (`docs/architecture/ai-import.md`)
+- [ ] Every AI import requires human confirmation — no exceptions found in testing
+- [ ] Cross-user and privileged-write emulator tests pass (`docs/threat-model.md`)
+- [ ] Pay engine boundary-condition suite passes (`docs/architecture/pay-engine.md`)
+- [ ] AI jobs and billing webhooks proven idempotent under retry
+- [ ] Raw schedule-image cleanup verified (no orphaned images past retention window)
+- [ ] Export and account deletion tested end-to-end
+- [ ] Offline editing and interrupted-upload recovery tested, including conflict scenarios (`docs/architecture/sync-and-auth.md`)
+- [ ] Device/OS matrix passes on representative iOS and Android versions
+- [ ] Accessibility pass completed (screen reader, keyboard/switch control)
+- [ ] Golden-test suite green (`docs/design/tokens.md`)
+- [ ] Paywall bypass attempt fails under direct-SDK testing
+- [ ] Privacy policy matches actual app behavior
+- [ ] Backup restore rehearsed
+- [ ] Monitoring, budgets, and kill switches verified in a live-adjacent environment
+- [ ] No secrets present in the shipped app bundle

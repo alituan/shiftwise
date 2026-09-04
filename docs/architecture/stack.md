@@ -1,0 +1,65 @@
+# Stack & Repository Structure
+
+## Decision record
+
+Flutter replaces the original Next.js web plan entirely — one codebase, iOS/Android primary, Flutter web secondary if ever needed. Firebase backend unchanged (framework-agnostic). Rationale: one developer, five concurrent projects — two frontends against one backend means every business rule (pay rounding, entitlement checks, AI-import state) gets written and maintained twice, which is how drift bugs happen.
+
+## Package choices
+
+| Layer | Choice | Why |
+|---|---|---|
+| State management | Riverpod (`flutter_riverpod` + `riverpod_generator`) | Testable, compile-safe DI; better solo-dev default than Bloc's boilerplate |
+| Backend | Firebase: Auth, Firestore, Storage, Functions (2nd gen), FCM | Unchanged from original web plan |
+| Local persistence | Firestore offline cache by default. Only add `Isar`/`Hive` if the cache genuinely can't cover a case (e.g. complex unsynced-edit queue) | Extra local DB = extra sync-bug surface. Default answer to "do we need this" is no |
+| Money | `decimal` package. Never raw `double` for currency | Dart's `double` is binary float, same footgun as JS |
+| Forms | `flutter_form_builder` + validators mirroring Cloud Functions schema rules | Keep validation logic conceptually shared even if not literally shared code |
+| Push | `firebase_messaging` (server-triggered) + `flutter_local_notifications` (scheduled, offline-safe) | Use local for "shift starts in 30 min" (deterministic); FCM for server events like "import finished" |
+| Images | `image_picker` + `image_cropper` + `image` (re-encode/strip EXIF) | Mirrors browser crop/re-encode pipeline from AI-import spec |
+| Routing | `go_router` | Declarative, consistent route guards across platforms |
+| Testing | `flutter_test`, `mocktail`, Firebase emulator integration tests, `golden_toolkit` | Golden tests protect the design system from silent drift over a long build |
+| CI/CD | GitHub Actions (`flutter test`, `flutter analyze`, per-platform build) + Codemagic/Fastlane for store deploy | |
+| Monitoring | Firebase Crashlytics + Sentry Flutter SDK | Same redaction requirements as original plan — see `docs/threat-model.md` |
+
+## Repository structure
+
+```
+/
+├── lib/
+│   ├── main.dart
+│   ├── app/
+│   │   ├── router.dart
+│   │   ├── theme/{tokens.dart,theme.dart}
+│   │   └── app.dart
+│   ├── features/
+│   │   ├── auth/
+│   │   ├── schedule/
+│   │   ├── scan/
+│   │   ├── pay/
+│   │   ├── jobs/
+│   │   ├── settings/
+│   │   └── billing/
+│   │       └── {data,domain,presentation}/
+│   ├── domain/                    # framework-free — no Flutter/Firebase imports
+│   │   ├── money/
+│   │   ├── time/
+│   │   ├── pay/
+│   │   └── concerns/
+│   ├── shared/
+│   │   ├── widgets/                # design-system components
+│   │   └── firebase/
+│   └── l10n/
+├── functions/                      # Cloud Functions, Node/TS — unchanged from web plan
+│   └── src/{callable,http,workers,billing,privacy,observability}/
+├── firebase/{firestore.rules,firestore.indexes.json,storage.rules}
+├── test/
+│   ├── domain/
+│   ├── features/
+│   ├── golden/
+│   └── integration/
+├── docs/                           # this doc tree
+├── assets/{icons,fonts}/
+├── AGENTS.md
+└── docs/PROJECT_PLAN.md
+```
+
+**Discipline rule:** `lib/domain/` stays pure Dart — no widget imports, no Firebase imports. This is what makes the pay engine unit-testable without spinning up emulators for every run.
