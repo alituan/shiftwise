@@ -69,6 +69,11 @@ void main() {
       );
       expect(theme.bottomSheetTheme.backgroundColor, colors.surface);
     });
+
+    test('FAB stays on the semantic palette, not a seed container tone', () {
+      expect(theme.floatingActionButtonTheme.backgroundColor, colors.primary);
+      expect(theme.floatingActionButtonTheme.foregroundColor, colors.surface);
+    });
   });
 
   group('ShiftWiseThemes.dark', () {

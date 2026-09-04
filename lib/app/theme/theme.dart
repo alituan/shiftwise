@@ -64,6 +64,12 @@ abstract final class ShiftWiseThemes {
         titleTextStyle: type.title,
       ),
       dividerTheme: DividerThemeData(color: colors.hairline, thickness: 1),
+      // M3 defaults the FAB to a seed-derived primaryContainer that is not
+      // in the semantic palette — CTAs and the FAB share the primary token.
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: colors.primary,
+        foregroundColor: colors.surface,
+      ),
       cardTheme: CardThemeData(
         color: colors.surfaceDim,
         elevation: 0,
