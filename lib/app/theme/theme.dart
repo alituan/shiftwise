@@ -81,6 +81,10 @@ abstract final class ShiftWiseThemes {
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: colors.surface,
         surfaceTintColor: Colors.transparent,
+        // Framework elevation stays at zero: the design's single shadow
+        // (Tokens.elevationSheet) is applied by the sheet content itself,
+        // where it can be the exact token BoxShadow.
+        elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(Tokens.radiusMd),

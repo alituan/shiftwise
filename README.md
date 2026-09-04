@@ -22,3 +22,22 @@ Web is a preview/verification target only — iOS and Android are the shipping
 platforms:
 
     flutter run -d web-server --web-port 3000 --web-hostname 0.0.0.0
+
+## Firebase auth (dev)
+
+The app initializes Firebase with demo options (`lib/firebase_options.dart`),
+so guest mode works with no Firebase project at all. Real sign-up/sign-in
+needs the Auth emulator (or a real project, once created):
+
+    firebase emulators:start --only auth
+
+Then run the app or tests against it:
+
+    flutter run -d web-server --web-port 3000 --dart-define=USE_FIREBASE_EMULATOR=true
+    firebase emulators:exec --only auth -- "flutter test test/integration"
+
+`integration_test/auth_test.dart` runs the real Firebase Auth SDK against
+the emulator — it needs a device or web target (see the test file header),
+not the plain `flutter test` VM. The `demo-shiftwise` project id comes from
+`.firebaserc`; nothing in it is secret. When a real Firebase project exists,
+regenerate `lib/firebase_options.dart` with `flutterfire configure`.

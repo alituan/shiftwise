@@ -70,6 +70,12 @@ void main() {
       expect(theme.bottomSheetTheme.backgroundColor, colors.surface);
     });
 
+    test('bottom sheet carries the only elevation in the design', () {
+      // Framework elevation is zero — the single elevationSheet shadow token
+      // is applied by the sheet content (see account_sheet.dart).
+      expect(theme.bottomSheetTheme.elevation, 0);
+    });
+
     test('FAB stays on the semantic palette, not a seed container tone', () {
       expect(theme.floatingActionButtonTheme.backgroundColor, colors.primary);
       expect(theme.floatingActionButtonTheme.foregroundColor, colors.surface);
