@@ -10,6 +10,8 @@ Owner approves: segment, jurisdiction, currency, claims, AI-accuracy benchmark t
 Design tokens and theme (`docs/design/tokens.md`), app shell, `go_router` setup, Schedule screen with manual shift CRUD, local-only (guest) mode, basic pay display, golden-test baseline established.
 **Exit:** manual flow works fully offline, on at least one real device per platform, no AI or cloud dependency.
 
+> **Known-open (2026-09-04):** the real-device exit criterion is unmet — Phase 1 is verified in the sandbox web preview and the unit/widget/golden suite only. Closing it with a real-device or emulator smoke test is a merge precondition, tracked here so it isn't lost under Phase 2 work.
+
 ### Phase 2 — Auth and secure sync
 Firebase Auth integration, Firestore model/rules/indexes (`docs/architecture/data-model.md`), Storage rules, emulator security tests, **offline conflict resolution** (`docs/architecture/offline-conflict-resolution.md` — this is the hard part, budget real time), account deletion/export skeleton.
 **Exit:** hostile direct-SDK emulator tests fail closed; cross-device sync test (edit same shift on two simulated devices) passes without silent overwrite.
