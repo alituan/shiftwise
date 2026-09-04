@@ -7,11 +7,12 @@ import 'package:shiftwise/app/app.dart';
 import 'package:shiftwise/app/theme/tokens.dart';
 
 void main() {
-  testWidgets('boots to the Phase-1 theme placeholder', (tester) async {
+  testWidgets('boots to the Schedule screen in guest mode', (tester) async {
     await tester.pumpWidget(const ProviderScope(child: ShiftWiseApp()));
-    expect(find.text('ShiftWise'), findsOneWidget);
-    expect(find.text('Tue · 2:00–10:00 PM'), findsOneWidget);
-    expect(find.text(r'Estimated gross pay: $124.00'), findsOneWidget);
+    expect(find.text('Schedule'), findsOneWidget);
+    expect(find.text('No shifts yet'), findsOneWidget);
+    expect(find.text('Add a shift'), findsOneWidget);
+    expect(find.text('Offline'), findsOneWidget);
   });
 
   testWidgets('follows system brightness with the matching palette', (
@@ -22,7 +23,7 @@ void main() {
       () => tester.platformDispatcher.clearPlatformBrightnessTestValue(),
     );
     await tester.pumpWidget(const ProviderScope(child: ShiftWiseApp()));
-    final context = tester.element(find.text('Tue · 2:00–10:00 PM'));
+    final context = tester.element(find.text('No shifts yet'));
     expect(Theme.of(context).brightness, Brightness.dark);
     expect(
       Theme.of(context).extension<DesignColors>(),

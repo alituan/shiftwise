@@ -3,27 +3,17 @@
 /// palettes, so design-system drift is caught from Phase 1 onward.
 library;
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:shiftwise/app/theme/theme.dart';
 import 'package:shiftwise/app/theme/tokens.dart';
 
-Future<ByteData> _loadFont(String path) async =>
-    ByteData.sublistView(await File(path).readAsBytes());
+import '../support/golden_fonts.dart';
 
 void main() {
-  // Bundled OTFs loaded straight from disk so the goldens render real Inter
-  // glyphs — including real tabular figures — instead of a fallback face.
-  setUpAll(() async {
-    final loader = FontLoader('Inter')
-      ..addFont(_loadFont('assets/fonts/Inter-Regular.otf'))
-      ..addFont(_loadFont('assets/fonts/Inter-SemiBold.otf'));
-    await loader.load();
-  });
+  // Real Inter glyphs — including real tabular figures (shared helper).
+  setUpAll(loadInterFonts);
 
   testGoldens('token showcase — light palette', (tester) async {
     await tester.pumpWidgetBuilder(
