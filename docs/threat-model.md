@@ -1,6 +1,6 @@
 # Threat Model & Security Controls
 
-## Why this matters more in a client-only Flutter app
+## Why this matters more in a client-only React Native app
 
 There is no server-rendered layer between the app and Firebase. Firestore/Storage rules plus Cloud Functions are the *entire* security boundary — not one layer among several. A hole in the rules is directly exploitable by anyone who inspects the app's Firebase config (which is not secret) and issues direct SDK calls.
 
@@ -12,7 +12,7 @@ There is no server-rendered layer between the app and Firebase. Firestore/Storag
 - Per-user and global AI budgets, enforced server-side.
 - Atomic quota reservation/consumption/refund (no race condition allowing quota bypass via concurrent requests).
 - Least-privilege service accounts for Cloud Functions.
-- Secrets in Firebase Secret Manager or CI secrets — never in the Flutter app bundle, never in `--dart-define` values that end up in a shipped binary if they're sensitive.
+- Secrets in Firebase Secret Manager or CI secrets — never in the React Native app bundle, never in Expo public env vars (`EXPO_PUBLIC_*`) if they're sensitive.
 - Redacted logs — never log schedule content, pay values, or tokens.
 - Backup/restore tested, not assumed to work.
 - AI and billing kill switches — a remote-config-driven way to disable AI import or billing calls in an incident without an app store release cycle.

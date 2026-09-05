@@ -1,6 +1,6 @@
 # Design Tokens
 
-Source of truth for every color, type, and spacing value. **No inline hex values or magic numbers in feature code** — everything references `lib/app/theme/tokens.dart`, which this doc mirrors.
+Source of truth for every color, type, and spacing value. **No inline hex values or magic numbers in feature code** — everything references `src/theme/tokens.ts` (mapped into the Uniwind/Tailwind theme), which this doc mirrors.
 
 ## Design brief (read this before changing anything below)
 
@@ -46,14 +46,14 @@ Spacing scale, corner radius, and elevation rules live in `docs/design/screens.m
 
 ## Layout principles
 
-- Mobile is the primary target. Desktop/tablet (if Flutter web is built) reuses a three-region layout: nav / workspace / context panel.
+- Mobile is the primary target. Desktop/tablet (if a web target is ever built via Expo web) reuses a three-region layout: nav / workspace / context panel.
 - The next-shift countdown is the one hero element — largest type, primary color. Everything else stays quiet.
 - Separate content with hairline dividers and `colorSurfaceDim`, not shadows-on-every-card.
 - Bottom nav (mobile): Schedule, Scan, Pay, Settings — thumb reach.
 
 ## Motion
 
-One deliberate animation, not motion-on-every-interaction. The confirm moment (AI-suggested shift → user-confirmed) is the one worth marking — a clean checkmark draw-in, not a bounce effect. Everything else uses Flutter's standard platform transitions. Respect `MediaQuery.disableAnimations`.
+One deliberate animation, not motion-on-every-interaction. The confirm moment (AI-suggested shift → user-confirmed) is the one worth marking — a clean checkmark draw-in, not a bounce effect. Everything else uses standard platform transitions. Respect the OS-level reduce-motion accessibility setting.
 
 ## Writing/microcopy rules
 
@@ -64,4 +64,4 @@ One deliberate animation, not motion-on-every-interaction. The confirm moment (A
 
 ## Golden-test requirement
 
-Every design-system component (buttons, day-cell, status chips) needs a golden test in `test/golden/` **in both light and dark palettes** before it's considered done. Set this up in Phase 1 — retrofitting golden baselines after drift has already happened defeats the purpose, and retrofitting a second palette after screens are already built is exactly the rework dark-mode-from-day-one is meant to avoid.
+Every design-system component (buttons, day-cell, status chips) needs a visual snapshot test in `__tests__/` **in both light and dark palettes** before it's considered done. Set this up in Phase 1 — retrofitting baselines after drift has already happened defeats the purpose, and retrofitting a second palette after screens are already built is exactly the rework dark-mode-from-day-one is meant to avoid.

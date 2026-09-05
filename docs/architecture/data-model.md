@@ -1,6 +1,6 @@
 # Firestore Data Model
 
-Unchanged from the original web plan — this is backend, not frontend. Restated here so Flutter feature work can reference it without pulling in unrelated docs.
+Unchanged from the original web plan — this is backend, not frontend. Restated here so React Native feature work can reference it without pulling in unrelated docs.
 
 ## Collections
 
@@ -50,7 +50,7 @@ Constraints: end after start, valid IANA timezone, job must be owned by requesti
 
 ## Client-prohibited writes
 
-The Flutter app must never write these directly — only Cloud Functions do:
+The React Native app must never write these directly — only Cloud Functions do:
 
 - Entitlements
 - Usage counters

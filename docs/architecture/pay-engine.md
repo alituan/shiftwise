@@ -6,7 +6,7 @@ Calculate **estimated gross pay only.** Never imply take-home pay, tax withholdi
 
 ## Money — non-negotiable
 
-Use the `decimal` package or integer minor-units (cents) throughout. **Never a raw `double` for any currency value.** Dart's `double` is IEEE 754 binary float — `hours * rate` as doubles will eventually produce values like `$47.999999999996`. Write one `Money` wrapper type in `lib/domain/money/` and route everything through it. Configure `flutter analyze` / a custom lint to flag raw `double` arithmetic inside `domain/money/` and `domain/pay/`.
+Use the `decimal.js` package or integer minor-units (cents) throughout. **Never a raw JS `number` for any currency value.** JavaScript's `number` is IEEE 754 binary float — `hours * rate` as raw numbers will eventually produce values like `$47.999999999996`. Write one `Money` wrapper type in `src/domain/money/` and route everything through it. Configure ESLint (a custom rule, e.g. `no-restricted-syntax`) to flag raw arithmetic operators on numeric currency values inside `domain/money/` and `domain/pay/`.
 
 ## Required inputs to any calculation
 
@@ -16,7 +16,7 @@ Currency, effective rate, pay-week start + timezone, paid/unpaid break minutes, 
 
 - Pure and deterministic — same inputs always produce the same output, no hidden state, no wall-clock reads inside the calculation itself.
 - Version every rate and every rule set applied. Store which version was used with each calculation snapshot (`docs/architecture/data-model.md`) so past pay estimates remain explainable even after rules change.
-- Lives in `lib/domain/pay/` — no Flutter or Firebase imports. Testable as plain Dart.
+- Lives in `src/domain/pay/` — no React Native or Firebase imports. Testable as plain TypeScript.
 
 ## Required test cases
 
