@@ -22,6 +22,9 @@ abstract final class Tokens {
   /// The only corner radius — cards, buttons, sheets.
   static const double radiusMd = 8;
 
+  /// Tooltip-level radius (the one sub-md corner allowed).
+  static const double radius2xs = 4;
+
   /// The only elevation: the bottom sheet floating over content. Separation
   /// everywhere else is hairline dividers plus `colorSurfaceDim` fills.
   static const List<BoxShadow> elevationSheet = [
@@ -37,6 +40,7 @@ abstract final class Tokens {
 final class DesignColors extends ThemeExtension<DesignColors> {
   const DesignColors({
     required this.ink,
+    required this.inkMuted,
     required this.surface,
     required this.surfaceDim,
     required this.primary,
@@ -44,10 +48,15 @@ final class DesignColors extends ThemeExtension<DesignColors> {
     required this.confirmed,
     required this.critical,
     required this.hairline,
+    required this.splash,
   });
 
   /// Primary text — including the labels paired with status colors.
   final Color ink;
+
+  /// Secondary text and inactive icons (nav inactive, helper rows).
+  /// Ink at reduced emphasis; still ≥3:1 on surface in both palettes.
+  final Color inkMuted;
 
   /// App background.
   final Color surface;
@@ -68,9 +77,13 @@ final class DesignColors extends ThemeExtension<DesignColors> {
   /// Ink at 8% opacity — the app's only separator treatment.
   final Color hairline;
 
+  /// Custom InkWell splash — the only ripple color in the app.
+  final Color splash;
+
   /// Light palette, per docs/design/tokens.md.
   static final DesignColors light = DesignColors(
     ink: const Color(0xFF14171C),
+    inkMuted: const Color(0xFF14171C).withValues(alpha: 0.60),
     surface: const Color(0xFFF6F5F2),
     surfaceDim: const Color(0xFFEAE8E3),
     primary: const Color(0xFF2B4C6F),
@@ -78,12 +91,14 @@ final class DesignColors extends ThemeExtension<DesignColors> {
     confirmed: const Color(0xFF3A7D5C),
     critical: const Color(0xFFB3261E),
     hairline: const Color(0xFF14171C).withValues(alpha: 0.08),
+    splash: const Color(0xFF14171C).withValues(alpha: 0.12),
   );
 
   /// Dark palette — hues re-tuned for dark-surface contrast, not copied from
-  /// light, per docs/design/tokens.md.
+  /// light, per docs/design/tokens.md. The design's reference palette.
   static final DesignColors dark = DesignColors(
     ink: const Color(0xFFEDEBE6),
+    inkMuted: const Color(0xFFEDEBE6).withValues(alpha: 0.60),
     surface: const Color(0xFF1B1E24),
     surfaceDim: const Color(0xFF252932),
     primary: const Color(0xFF7FA8CC),
@@ -91,11 +106,13 @@ final class DesignColors extends ThemeExtension<DesignColors> {
     confirmed: const Color(0xFF6FBF95),
     critical: const Color(0xFFE5766F),
     hairline: const Color(0xFFEDEBE6).withValues(alpha: 0.08),
+    splash: const Color(0xFFEDEBE6).withValues(alpha: 0.12),
   );
 
   @override
   DesignColors copyWith({
     Color? ink,
+    Color? inkMuted,
     Color? surface,
     Color? surfaceDim,
     Color? primary,
@@ -103,9 +120,11 @@ final class DesignColors extends ThemeExtension<DesignColors> {
     Color? confirmed,
     Color? critical,
     Color? hairline,
+    Color? splash,
   }) {
     return DesignColors(
       ink: ink ?? this.ink,
+      inkMuted: inkMuted ?? this.inkMuted,
       surface: surface ?? this.surface,
       surfaceDim: surfaceDim ?? this.surfaceDim,
       primary: primary ?? this.primary,
@@ -113,6 +132,7 @@ final class DesignColors extends ThemeExtension<DesignColors> {
       confirmed: confirmed ?? this.confirmed,
       critical: critical ?? this.critical,
       hairline: hairline ?? this.hairline,
+      splash: splash ?? this.splash,
     );
   }
 
@@ -121,6 +141,7 @@ final class DesignColors extends ThemeExtension<DesignColors> {
     if (identical(this, other)) return this;
     return DesignColors(
       ink: Color.lerp(ink, other.ink, t)!,
+      inkMuted: Color.lerp(inkMuted, other.inkMuted, t)!,
       surface: Color.lerp(surface, other.surface, t)!,
       surfaceDim: Color.lerp(surfaceDim, other.surfaceDim, t)!,
       primary: Color.lerp(primary, other.primary, t)!,
@@ -128,6 +149,7 @@ final class DesignColors extends ThemeExtension<DesignColors> {
       confirmed: Color.lerp(confirmed, other.confirmed, t)!,
       critical: Color.lerp(critical, other.critical, t)!,
       hairline: Color.lerp(hairline, other.hairline, t)!,
+      splash: Color.lerp(splash, other.splash, t)!,
     );
   }
 }

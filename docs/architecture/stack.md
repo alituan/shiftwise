@@ -23,6 +23,7 @@ Flutter replaces the original Next.js web plan entirely — one codebase, iOS/An
 ## Deviation record
 
 - **2026-09-04 — `flutter_form_builder` → plain Material fields (Phase 1).** v11 builds on the `material_ui` component fork, whose `InputDecoration` is a different class from `flutter/material`'s — forms built on it cannot consume the token-driven `ThemeData` every other surface maps through, so it was removed before any form shipped. Direct packages added instead: `uuid` (client-side shift ids), `intl` (en-US wall-clock formatting until locale Settings exist), `meta` (`@immutable` on domain models).
+- **2026-09-05 — Material 3 off at the theme layer (owner decision, stage A of three).** `useMaterial3: false`, a directly constructed token-pinned `ColorScheme` (no `fromSeed` — seed-derived containers were the main leak), and explicit component-theme pins for every framework surface (AppBar, buttons, input, card, bottom sheet, nav bar, dialog, snackbar, FAB, progress, divider, icon, chip, switch, checkbox, radio, tooltip, tab bar, drawer, pickers), `VisualDensity.compact` global. Stage B replaces production widgets with a custom library; stage C adopts it in screens. Reference aesthetic: Linear / Vercel / Arc — dense, dark-first, high contrast.
 
 ## Repository structure
 

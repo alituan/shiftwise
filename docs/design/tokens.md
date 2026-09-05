@@ -13,12 +13,15 @@ Two palettes, same semantic roles. Every token below has a light and dark value 
 | Role | Token | Light | Dark | Why |
 |---|---|---|---|---|
 | Ink (primary text) | `colorInk` | `#14171C` | `#EDEBE6` | Near-black on light; warm off-white on dark, not pure white — avoids harsh glare at night, which is when this app gets used most |
+| Ink-muted (secondary) | `colorInkMuted` | ink @ 60% | ink @ 60% | Inactive nav icons, helper text, placeholder rows — reduced emphasis that still clears 3:1 on surface in both palettes |
 | Surface | `colorSurface` | `#F6F5F2` | `#1B1E24` | Warm off-white / near-black, not clinical white or pure `#000` |
 | Surface-dim | `colorSurfaceDim` | `#EAE8E3` | `#252932` | One step down — day-cells, secondary panels |
 | Primary (brand, CTAs) | `colorPrimary` | `#2B4C6F` | `#7FA8CC` | Dark mode primary is lightened, not the same hex on a dark background — a `#2B4C6F` button on `#1B1E24` fails contrast |
 | Concern / warning | `colorConcern` | `#C4501C` | `#E08349` | Lightened for dark-background contrast, same hue identity |
 | Confirmed / success | `colorConfirmed` | `#3A7D5C` | `#6FBF95` | Lightened for dark-background contrast |
 | Critical (errors only) | `colorCritical` | `#B3261E` | `#E5766F` | Lightened for dark-background contrast |
+| Splash | `colorSplash` | ink @ 12% | ink @ 12% | The only ripple color — every ink-response surface splashes from this token, never a Material default |
+| Hairline | `colorHairline` | ink @ 8% | ink @ 8% | The only separator treatment — see spacing/shape in screens.md |
 
 **Rule: concern ≠ error.** These must look visually distinct or users start ignoring warnings — true in both palettes independently, verify contrast between `colorConcern` and `colorCritical` separately for light and dark, don't assume light-mode contrast checking covers dark mode.
 
