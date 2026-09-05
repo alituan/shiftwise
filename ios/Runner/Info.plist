@@ -26,6 +26,10 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>ShiftWise uses the camera to photograph your work schedule for AI-assisted import. The photo is cropped and its metadata removed on your device first; it is only uploaded if you explicitly consent.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>ShiftWise uses the photo library to pick an existing photo of your work schedule for AI-assisted import. The image is cropped and its metadata removed on your device first; it is only uploaded if you explicitly consent.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
