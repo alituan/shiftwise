@@ -1,0 +1,61 @@
+@import 'tailwindcss';
+@import 'uniwind';
+
+/*
+ * Design tokens — mirrors docs/design/tokens.md exactly. Every color has a
+ * light and dark pairing defined here in full (Uniwind requires every
+ * theme to declare the same variable set); components reference the
+ * semantic Tailwind color name (e.g. bg-surface, text-ink), never a raw
+ * hex, so theme switching is automatic. See docs/design/tokens.md for the
+ * rationale behind each color and the "concern != error" / "status color
+ * always paired with a label" rules that apply wherever these are used.
+ */
+@theme {
+  --font-sans: 'Inter';
+
+  --text-hero: 34px;
+  --text-title: 20px;
+  --text-body: 16px;
+  --text-label: 13px;
+
+  --spacing-2xs: 4px;
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+
+  --radius-md: 8px;
+  --radius-2xs: 4px;
+}
+
+@layer theme {
+  :root {
+    @variant light {
+      --color-ink: #14171c;
+      --color-ink-muted: rgb(20 23 28 / 0.6);
+      --color-surface: #f6f5f2;
+      --color-surface-dim: #eae8e3;
+      --color-primary: #2b4c6f;
+      --color-concern: #c4501c;
+      --color-confirmed: #3a7d5c;
+      --color-critical: #b3261e;
+      --color-splash: rgb(20 23 28 / 0.12);
+      --color-hairline: rgb(20 23 28 / 0.08);
+    }
+
+    @variant dark {
+      --color-ink: #edebe6;
+      --color-ink-muted: rgb(237 235 230 / 0.6);
+      --color-surface: #1b1e24;
+      --color-surface-dim: #252932;
+      --color-primary: #7fa8cc;
+      --color-concern: #e08349;
+      --color-confirmed: #6fbf95;
+      --color-critical: #e5766f;
+      --color-splash: rgb(237 235 230 / 0.12);
+      --color-hairline: rgb(237 235 230 / 0.08);
+    }
+  }
+}
