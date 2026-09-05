@@ -51,5 +51,16 @@ every change ships with hostile emulator tests in the same commit
     firebase emulators:exec --only firestore,storage -- "npm --prefix rules-tests test"
 
 The suite attacks the rules through direct SDK calls (cross-user access,
-unauthenticated access, server-owned collections, schema and revision
-invariants), never through the app UI.
+unauthenticated access, server-owned collections), never through the app
+UI. Shift documents are client read-only: every shift write goes through
+the `writeShift` Cloud Function.
+
+### The writeShift guard (Cloud Functions)
+
+All shift writes (create, edit, delete) go through one transactional
+callable in `functions/` — the guard that makes stale writes either
+auto-merge (disjoint fields) or return `CONFLICT` with the current server
+document instead of silently overwriting. Its suite runs against the
+Firestore emulator:
+
+    firebase emulators:exec --only firestore -- "npm --prefix functions test"

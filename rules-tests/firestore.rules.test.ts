@@ -2,10 +2,15 @@
 ///
 /// These attack the rules through the Firestore client SDK, bypassing any
 /// app UI — the only honest way to test the security boundary
-/// (docs/testing.md, docs/threat-model.md). Run with the Firestore
-/// emulator up:
+/// (docs/testing.md, docs/threat-model.md). Shift documents are read-only
+/// here on purpose: every shift write goes through the writeShift callable
+/// (functions/src/write_shift.ts), whose own suite covers schema,
+/// revision monotonicity, and conflict detection. Closing direct client
+/// writes in these rules is what makes that guard unbypassable.
 ///
-///     firebase emulators:exec --only firestore -- "npm --prefix rules-tests test"
+/// Run with the Firestore emulator up:
+///
+///     firebase emulators:exec --only firestore,storage -- "npm --prefix rules-tests test"
 import { beforeAll, afterAll, beforeEach, describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -40,7 +45,7 @@ afterAll(() => testEnv.cleanup());
 
 beforeEach(() => testEnv.clearFirestore());
 
-/** Full 15-key shift document; serverTimestamp satisfies request.time. */
+/** Full 16-key shift document (writeShift's stored shape). */
 function shiftDoc(overrides: Record<string, unknown> = {}): Record<string, unknown> {
   return {
     jobId: 'job-1',
@@ -56,18 +61,11 @@ function shiftDoc(overrides: Record<string, unknown> = {}): Record<string, unkno
     sourceParseJobId: null,
     reviewStatus: 'confirmed',
     revision: 1,
-    createdAt: FieldValue.serverTimestamp(),
-    updatedAt: FieldValue.serverTimestamp(),
+    createdAt: Timestamp.fromMillis(Date.UTC(2026, 8, 4, 9, 0)),
+    updatedAt: Timestamp.fromMillis(Date.UTC(2026, 8, 4, 9, 0)),
+    updatedBy: 'device-seed',
     ...overrides,
   };
-}
-
-/** Seeded doc with a fixed createdAt so update tests can echo it back. */
-function seededShift(overrides: Record<string, unknown> = {}): Record<string, unknown> {
-  return shiftDoc({
-    createdAt: Timestamp.fromMillis(Date.UTC(2026, 8, 4, 9, 0)),
-    ...overrides,
-  });
 }
 
 async function seed(path: string, data: Record<string, unknown>): Promise<void> {
@@ -78,7 +76,7 @@ async function seed(path: string, data: Record<string, unknown>): Promise<void> 
 
 describe('authentication boundary', () => {
   it('denies unauthenticated reads of a user tree', async () => {
-    await seed('users/alice/shifts/s1', seededShift());
+    await seed('users/alice/shifts/s1', shiftDoc());
     await assertFails(
       testEnv.unauthenticatedContext().firestore().doc('users/alice/shifts/s1').get(),
     );
@@ -90,21 +88,21 @@ describe('authentication boundary', () => {
         .unauthenticatedContext()
         .firestore()
         .doc('users/alice/shifts/s1')
-        .set(shiftDoc() as never),
+        .set(shiftDoc({ createdAt: FieldValue.serverTimestamp() }) as never),
     );
   });
 });
 
 describe('user isolation (cross-user attacks)', () => {
   it('denies reading another user shift', async () => {
-    await seed('users/alice/shifts/s1', seededShift());
+    await seed('users/alice/shifts/s1', shiftDoc());
     await assertFails(
       testEnv.authenticatedContext('bob').firestore().doc('users/alice/shifts/s1').get(),
     );
   });
 
   it('denies listing another user shifts', async () => {
-    await seed('users/alice/shifts/s1', seededShift());
+    await seed('users/alice/shifts/s1', shiftDoc());
     await assertFails(
       testEnv
         .authenticatedContext('bob')
@@ -120,12 +118,12 @@ describe('user isolation (cross-user attacks)', () => {
         .authenticatedContext('bob')
         .firestore()
         .doc('users/alice/shifts/s1')
-        .set(shiftDoc() as never),
+        .set(shiftDoc({ createdAt: FieldValue.serverTimestamp() }) as never),
     );
   });
 
   it('denies deleting another user shift', async () => {
-    await seed('users/alice/shifts/s1', seededShift());
+    await seed('users/alice/shifts/s1', shiftDoc());
     await assertFails(
       testEnv
         .authenticatedContext('bob')
@@ -146,19 +144,9 @@ describe('user isolation (cross-user attacks)', () => {
   });
 });
 
-describe('owner shift CRUD (the one client-writable path)', () => {
-  it('allows the owner to create a valid shift', async () => {
-    await assertSucceeds(
-      testEnv
-        .authenticatedContext('alice')
-        .firestore()
-        .doc('users/alice/shifts/s1')
-        .set(shiftDoc() as never),
-    );
-  });
-
+describe('shifts are writeShift-only', () => {
   it('allows the owner to read and list own shifts', async () => {
-    await seed('users/alice/shifts/s1', seededShift());
+    await seed('users/alice/shifts/s1', shiftDoc());
     await assertSucceeds(
       testEnv.authenticatedContext('alice').firestore().doc('users/alice/shifts/s1').get(),
     );
@@ -171,127 +159,40 @@ describe('owner shift CRUD (the one client-writable path)', () => {
     );
   });
 
-  it('allows the owner to delete own shift', async () => {
-    await seed('users/alice/shifts/s1', seededShift());
-    await assertSucceeds(
+  it('denies direct owner creates — the callable is the only write path', async () => {
+    await assertFails(
+      testEnv
+        .authenticatedContext('alice')
+        .firestore()
+        .doc('users/alice/shifts/s1')
+        .set(shiftDoc({ createdAt: FieldValue.serverTimestamp() }) as never),
+    );
+  });
+
+  it('denies direct owner updates even with a correct revision bump', async () => {
+    await seed('users/alice/shifts/s1', shiftDoc());
+    await assertFails(
+      testEnv
+        .authenticatedContext('alice')
+        .firestore()
+        .doc('users/alice/shifts/s1')
+        .set(
+          shiftDoc({
+            revision: 2,
+            updatedAt: FieldValue.serverTimestamp(),
+          }) as never,
+        ),
+    );
+  });
+
+  it('denies direct owner deletes — stale deletes must hit the guard', async () => {
+    await seed('users/alice/shifts/s1', shiftDoc());
+    await assertFails(
       testEnv
         .authenticatedContext('alice')
         .firestore()
         .doc('users/alice/shifts/s1')
         .delete(),
-    );
-  });
-});
-
-describe('shift schema enforcement', () => {
-  const create = (data: Record<string, unknown>) =>
-    testEnv
-      .authenticatedContext('alice')
-      .firestore()
-      .doc('users/alice/shifts/s1')
-      .set(data as never);
-
-  it('rejects a missing field', async () => {
-    const doc = shiftDoc();
-    delete doc.timeZone;
-    await assertFails(create(doc));
-  });
-
-  it('rejects an unknown field (updatedBy before its step)', async () => {
-    await assertFails(create(shiftDoc({ updatedBy: 'device-1' })));
-  });
-
-  it('rejects end at or before start', async () => {
-    await assertFails(
-      create(shiftDoc({ endUtc: Timestamp.fromMillis(Date.UTC(2026, 8, 4, 14, 0)) })),
-    );
-  });
-
-  it('rejects revision other than 1 on create', async () => {
-    await assertFails(create(shiftDoc({ revision: 2 })));
-  });
-
-  it('rejects client-forged updatedAt', async () => {
-    await assertFails(
-      create(
-        shiftDoc({ updatedAt: Timestamp.fromMillis(Date.UTC(2020, 0, 1, 0, 0)) }),
-      ),
-    );
-  });
-
-  it('rejects a scanned shift without a parse-job reference', async () => {
-    await assertFails(create(shiftDoc({ source: 'scanned' })));
-  });
-
-  it('rejects a non-confirmed review status', async () => {
-    await assertFails(create(shiftDoc({ reviewStatus: 'draft' })));
-  });
-});
-
-describe('shift update invariants', () => {
-  it('allows a valid update: revision+1, createdAt echoed, server time', async () => {
-    const seeded = seededShift();
-    await seed('users/alice/shifts/s1', seeded);
-    await assertSucceeds(
-      testEnv
-        .authenticatedContext('alice')
-        .firestore()
-        .doc('users/alice/shifts/s1')
-        .set({
-          ...seeded,
-          revision: 2,
-          unpaidBreakMinutes: 45,
-          updatedAt: FieldValue.serverTimestamp(),
-        } as never),
-    );
-  });
-
-  it('rejects an update that does not increment revision', async () => {
-    const seeded = seededShift();
-    await seed('users/alice/shifts/s1', seeded);
-    await assertFails(
-      testEnv
-        .authenticatedContext('alice')
-        .firestore()
-        .doc('users/alice/shifts/s1')
-        .set({
-          ...seeded,
-          unpaidBreakMinutes: 45,
-          updatedAt: FieldValue.serverTimestamp(),
-        } as never),
-    );
-  });
-
-  it('rejects an update that skips a revision', async () => {
-    const seeded = seededShift();
-    await seed('users/alice/shifts/s1', seeded);
-    await assertFails(
-      testEnv
-        .authenticatedContext('alice')
-        .firestore()
-        .doc('users/alice/shifts/s1')
-        .set({
-          ...seeded,
-          revision: 3,
-          updatedAt: FieldValue.serverTimestamp(),
-        } as never),
-    );
-  });
-
-  it('rejects mutating createdAt', async () => {
-    const seeded = seededShift();
-    await seed('users/alice/shifts/s1', seeded);
-    await assertFails(
-      testEnv
-        .authenticatedContext('alice')
-        .firestore()
-        .doc('users/alice/shifts/s1')
-        .set({
-          ...seeded,
-          revision: 2,
-          createdAt: FieldValue.serverTimestamp(),
-          updatedAt: FieldValue.serverTimestamp(),
-        } as never),
     );
   });
 });

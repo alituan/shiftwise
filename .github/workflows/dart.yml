@@ -31,6 +31,9 @@ jobs:
       - name: Install rules-test dependencies
         run: npm --prefix rules-tests install
 
+      - name: Install functions dependencies
+        run: npm --prefix functions install
+
       - name: Verify formatting
         run: dart format --output=none --set-exit-if-changed .
 
@@ -38,4 +41,4 @@ jobs:
         run: flutter analyze
 
       - name: Run tests (Firebase Auth + Firestore + Storage emulators)
-        run: firebase emulators:exec --only auth,firestore,storage -- "flutter test && npm --prefix rules-tests test"
+        run: firebase emulators:exec --only auth,firestore,storage -- "flutter test && npm --prefix rules-tests test && npm --prefix functions test"

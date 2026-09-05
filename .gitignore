@@ -54,3 +54,5 @@ test/golden/failures/
 .hoplite/archive/
 rules-tests/node_modules/
 *-debug.log
+functions/node_modules/
+functions/lib/

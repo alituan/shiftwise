@@ -1,0 +1,21 @@
+{
+  "name": "shiftwise-functions",
+  "private": true,
+  "description": "ShiftWise Cloud Functions — the writeShift transactional guard (docs/architecture/offline-conflict-resolution.md).",
+  "engines": {
+    "node": "22"
+  },
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "firebase-admin": "^14.3.0",
+    "firebase-functions": "^7.3.2"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.0"
+  }
+}

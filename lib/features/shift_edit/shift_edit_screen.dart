@@ -18,10 +18,14 @@ import 'package:shiftwise/shared/time_format.dart';
 import 'package:uuid/uuid.dart';
 
 class ShiftEditScreen extends ConsumerStatefulWidget {
-  const ShiftEditScreen({super.key, this.editing});
+  const ShiftEditScreen({super.key, this.editing, this.now});
 
   /// Null creates a new shift; non-null edits that shift.
   final Shift? editing;
+
+  /// Injectable clock so tests land default dates on the schedule's frozen
+  /// day; production leaves it null and uses the wall clock.
+  final DateTime? now;
 
   @override
   ConsumerState<ShiftEditScreen> createState() => _ShiftEditScreenState();
@@ -40,7 +44,7 @@ class _ShiftEditScreenState extends ConsumerState<ShiftEditScreen> {
   void initState() {
     super.initState();
     final editing = widget.editing;
-    final base = editing?.start ?? DateTime.now();
+    final base = editing?.start ?? widget.now ?? DateTime.now();
     _jobName = TextEditingController(text: editing?.jobName);
     _breakMinutes = TextEditingController(
       text: (editing?.breakMinutes ?? 0).toString(),
