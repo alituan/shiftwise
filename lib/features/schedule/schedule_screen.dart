@@ -64,6 +64,11 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
         title: const Text('Schedule'),
         actions: [
           IconButton(
+            icon: const Icon(Icons.photo_camera_outlined),
+            tooltip: 'Scan schedule',
+            onPressed: () => context.push('/scan'),
+          ),
+          IconButton(
             icon: const Icon(Icons.person_outline),
             tooltip: 'Account',
             onPressed: () => showAccountSheet(context),

@@ -22,6 +22,8 @@ Firebase Auth integration, Firestore model/rules/indexes (`docs/architecture/dat
 Full pipeline per `docs/architecture/ai-import.md`: crop/re-encode/consent UI, Cloud Function job creation, quota enforcement, upload, worker, schema validation, review UI, cleanup, benchmark validation against Phase 0 targets.
 **Exit:** image-to-confirmed-shift flow has zero unreviewed writes and zero retry-duplication in testing.
 
+> **Progress (2026-09-05):** step 1 — client-side preprocessing only — complete: pick/camera → crop to the schedule row → EXIF stripped by re-encode → client validation → consent naming the AI processor → prepared-artifact state. No upload, no backend, no shift data. Later steps: parse-job Cloud Function + quota, upload + Storage rules, worker, review UI, cleanup. `aiProcessorName` in `lib/features/scan/scan_config.dart` is a placeholder until the owner selects the provider.
+
 ### Phase 4 — Production pay engine
 Full implementation per `docs/architecture/pay-engine.md`: rates, breaks, timezone/DST handling, boundary logic, differentials, rounding, calculation explanations, user-configured concerns.
 **Exit:** full boundary-condition test suite passes; every calculation exposes its inputs and rule version in the UI.
