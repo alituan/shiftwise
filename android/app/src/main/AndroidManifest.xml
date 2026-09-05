@@ -1,4 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Scan feature: launching the camera for schedule photos
+         (image_picker). Gallery picking uses the system photo picker and
+         needs no permission. -->
+    <uses-permission android:name="android.permission.CAMERA"/>
     <application
         android:label="shiftwise"
         android:name="${applicationName}"

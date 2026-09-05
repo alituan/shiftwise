@@ -64,3 +64,13 @@ document instead of silently overwriting. Its suite runs against the
 Firestore emulator:
 
     firebase emulators:exec --only firestore -- "npm --prefix functions test"
+
+### Scan (AI import, client side)
+
+`/scan` photographs or picks a schedule, crops to the user's row (native
+cropper UIs; works in the web preview too), strips EXIF by re-encoding,
+validates client-side, and requires explicit consent naming the AI
+processor before anything is prepared. The processor name is a single
+placeholder constant in `lib/features/scan/scan_config.dart` — replace it
+when the AI provider is chosen. Nothing uploads yet; the backend pipeline
+is the next phase step.
