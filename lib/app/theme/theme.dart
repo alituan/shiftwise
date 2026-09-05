@@ -223,6 +223,71 @@ abstract final class ShiftWiseThemes {
         labelTextStyle: WidgetStatePropertyAll(type.label),
         iconTheme: WidgetStatePropertyAll(IconThemeData(color: colors.ink)),
       ),
+      chipTheme: ChipThemeData(
+        backgroundColor: colors.surfaceDim,
+        selectedColor: colors.surfaceDim,
+        disabledColor: colors.surfaceDim,
+        deleteIconColor: colors.inkMuted,
+        labelStyle: type.label.copyWith(color: colors.ink),
+        secondaryLabelStyle: type.label.copyWith(color: colors.ink),
+        iconTheme: IconThemeData(color: colors.ink, size: 18),
+        side: BorderSide(color: colors.hairline),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Tokens.radius2xs),
+        ),
+        elevation: 0,
+        pressElevation: 0,
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? colors.surface
+              : colors.inkMuted,
+        ),
+        trackColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? colors.primary
+              : colors.surfaceDim,
+        ),
+        trackOutlineColor: WidgetStatePropertyAll(colors.hairline),
+      ),
+      checkboxTheme: CheckboxThemeData(
+        fillColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? colors.primary
+              : Colors.transparent,
+        ),
+        checkColor: WidgetStatePropertyAll(colors.surface),
+        side: BorderSide(color: colors.inkMuted),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Tokens.radius2xs),
+        ),
+      ),
+      radioTheme: RadioThemeData(
+        fillColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? colors.primary
+              : colors.inkMuted,
+        ),
+      ),
+      tabBarTheme: TabBarThemeData(
+        labelColor: colors.ink,
+        unselectedLabelColor: colors.inkMuted,
+        indicatorColor: colors.primary,
+        dividerColor: colors.hairline,
+        overlayColor: WidgetStatePropertyAll(colors.splash),
+        labelStyle: type.label,
+        unselectedLabelStyle: type.label,
+        indicatorSize: TabBarIndicatorSize.label,
+      ),
+      drawerTheme: DrawerThemeData(
+        backgroundColor: colors.surface,
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Tokens.radiusMd),
+        ),
+      ),
       inputDecorationTheme: InputDecorationTheme(
         // Underline-only fields: no Material filled default anywhere.
         filled: false,
