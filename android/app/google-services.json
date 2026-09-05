@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "802321064739",
+    "project_id": "alituan-22",
+    "storage_bucket": "alituan-22.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:802321064739:android:6cf96834eef5551d102296",
+        "android_client_info": {
+          "package_name": "com.android.application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVig2a_4hrtleEBIZ0TzNh1FfmY7E9kDk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
