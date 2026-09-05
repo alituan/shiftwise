@@ -83,6 +83,7 @@ abstract final class ShiftWiseThemes {
       textTheme: textTheme,
       extensions: [colors, type],
       visualDensity: VisualDensity.compact,
+      iconTheme: IconThemeData(color: colors.ink, size: 24),
       splashFactory: InkRipple.splashFactory,
       // Framework-facing component pins: production screens use the custom
       // library, these cover dialogs, pickers, snackbars, and any future
@@ -147,6 +148,7 @@ abstract final class ShiftWiseThemes {
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
+          backgroundColor: Colors.transparent,
           foregroundColor: colors.ink,
           side: BorderSide(color: colors.hairline),
           shape: RoundedRectangleBorder(

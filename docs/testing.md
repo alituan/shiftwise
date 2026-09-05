@@ -5,7 +5,7 @@
 | Domain | Time, money, breaks, rounding, rate versions, schedule concerns | `flutter_test`, pure Dart — no Firebase/widget deps |
 | Properties | Nonnegative duration/pay, deterministic recomputation, valid interval invariants | `flutter_test` |
 | Widgets | Forms, calendar, uncertainty states, paywall, error states | `flutter_test` + `mocktail` |
-| Golden | Design-system components (buttons, day-cell, status chips) | `golden_toolkit` |
+| Golden | Theme pins + design-system components (tokens showcase, themed framework widgets, App* library, screens) | `golden_toolkit` |
 | Security | Auth, cross-user access, privileged writes, malformed writes — via direct SDK calls, not UI | Firebase Emulator Suite |
 | Cloud Functions | Quota logic, state transitions, retry/idempotency, billing reconciliation | Firebase Emulator Suite + Node test runner |
 | Integration | Auth flow, shift CRUD, scan review flow, offline recovery, billing, account deletion | `integration_test` package + emulators |
