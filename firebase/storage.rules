@@ -1,0 +1,13 @@
+rules_version = '2';
+
+// Deny-by-default storage rules — nothing uses Storage until the Phase 3
+// AI-import pipeline, so every client path is denied (docs/threat-model.md).
+// The upload step will open exactly the parse-job-scoped paths it needs,
+// with emulator tests in the same commit.
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

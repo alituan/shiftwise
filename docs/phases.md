@@ -16,7 +16,7 @@ Design tokens and theme (`docs/design/tokens.md`), app shell, `go_router` setup,
 Firebase Auth integration, Firestore model/rules/indexes (`docs/architecture/data-model.md`), Storage rules, emulator security tests, **offline conflict resolution** (`docs/architecture/offline-conflict-resolution.md` — this is the hard part, budget real time), account deletion/export skeleton.
 **Exit:** hostile direct-SDK emulator tests fail closed; cross-device sync test (edit same shift on two simulated devices) passes without silent overwrite.
 
-> **Progress (2026-09-04):** step 1 — Firebase Auth only (emulator-first) — complete; email verification surfaced but not blocking; OAuth deferred per `docs/scope.md`. Next steps in this phase: Firestore model/rules + emulator security tests, then offline conflict resolution. Real Firebase project and platform config files are still an owner action.
+> **Progress (2026-09-04):** step 1 — Firebase Auth only (emulator-first) — complete; email verification surfaced but not blocking; OAuth deferred per `docs/scope.md`. Step 2 — Firestore model, deny-by-default Firestore/Storage rules, hostile direct-SDK emulator security tests (Node, `rules-tests/`), pure-Dart shift-document mapper — complete. Next steps in this phase: client sync with the `writeShift` Cloud Function and offline conflict resolution, then account deletion/export. Real Firebase project and platform config files are still an owner action.
 
 ### Phase 3 — AI import
 Full pipeline per `docs/architecture/ai-import.md`: crop/re-encode/consent UI, Cloud Function job creation, quota enforcement, upload, worker, schema validation, review UI, cleanup, benchmark validation against Phase 0 targets.

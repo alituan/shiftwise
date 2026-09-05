@@ -1,0 +1,14 @@
+{
+  "name": "shiftwise-rules-tests",
+  "private": true,
+  "description": "Hostile direct-SDK security tests for Firestore and Storage rules against the Firebase Emulator Suite (docs/testing.md).",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^5.0.2",
+    "firebase": "^12.18.0",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.0"
+  }
+}
