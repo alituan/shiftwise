@@ -30,6 +30,7 @@ const List<String> shiftDocumentKeys = [
   'revision',
   'createdAt',
   'updatedAt',
+  'updatedBy',
 ];
 
 /// Client-written fields for a manual shift. The device IANA zone and the
@@ -79,6 +80,7 @@ class ShiftDocumentData {
     required this.sourceParseJobId,
     required this.reviewStatus,
     required this.revision,
+    required this.updatedBy,
   });
 
   final String jobId;
@@ -94,6 +96,10 @@ class ShiftDocumentData {
   final String? sourceParseJobId;
   final String reviewStatus;
   final int revision;
+
+  /// Locally-generated device id that last wrote the shift — never shown
+  /// to the user; powers "your other device changed this" copy.
+  final String updatedBy;
 
   static ShiftDocumentData fromMap(Map<String, Object?> map) {
     final keys = map.keys.toSet();
@@ -198,6 +204,14 @@ class ShiftDocumentData {
     if (revision is! int || revision < 1) {
       throw ArgumentError.value(revision, 'revision', 'must be an int >= 1');
     }
+    final updatedBy = map['updatedBy'];
+    if (updatedBy is! String || updatedBy.isEmpty) {
+      throw ArgumentError.value(
+        updatedBy,
+        'updatedBy',
+        'must be a non-empty device id string',
+      );
+    }
     return ShiftDocumentData(
       jobId: jobId,
       startUtc: startUtc,
@@ -212,6 +226,7 @@ class ShiftDocumentData {
       sourceParseJobId: sourceParseJobId as String?,
       reviewStatus: reviewStatus as String,
       revision: revision,
+      updatedBy: updatedBy,
     );
   }
 }

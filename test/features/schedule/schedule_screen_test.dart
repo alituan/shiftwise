@@ -28,7 +28,7 @@ Widget pumpApp({List<Shift> seeds = const []}) {
           GoRoute(
             path: '/shift-edit',
             builder: (_, state) =>
-                ShiftEditScreen(editing: state.extra as Shift?),
+                ShiftEditScreen(editing: state.extra as Shift?, now: testNow),
           ),
         ],
       ),

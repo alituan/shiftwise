@@ -5,8 +5,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shiftwise/domain/schedule/shift.dart';
 import 'package:shiftwise/features/schedule/data/shift_document.dart';
 
-/// Builds a full 15-key document like the server would store — mirrors the
-/// rules-tests fixtures so the Dart and rules suites stay in sync.
+/// Builds a full 16-key document like the server would store — mirrors the
+/// rules-tests and functions-test fixtures so all three suites stay in
+/// sync on the shift schema.
 Map<String, Object?> fullDocument({Object? overrides}) {
   final doc = <String, Object?>{
     'jobId': 'job-1',
@@ -24,6 +25,7 @@ Map<String, Object?> fullDocument({Object? overrides}) {
     'revision': 1,
     'createdAt': DateTime.utc(2026, 9, 4, 9),
     'updatedAt': DateTime.utc(2026, 9, 4, 9),
+    'updatedBy': 'device-test',
   };
   if (overrides is Map<String, Object?>) {
     doc.addAll(overrides);
@@ -96,6 +98,7 @@ void main() {
       final serverPart = {
         'createdAt': DateTime.utc(2026, 9, 4, 9),
         'updatedAt': DateTime.utc(2026, 9, 4, 9),
+        'updatedBy': 'device-test',
       };
       expect(
         {...clientPart, ...serverPart}.keys.toSet(),
@@ -112,6 +115,7 @@ void main() {
       expect(data.timeZone, 'Africa/Kigali');
       expect(data.unpaidBreakMinutes, 30);
       expect(data.revision, 1);
+      expect(data.updatedBy, 'device-test');
     });
 
     test('round-trips unpaid break and revision', () {
@@ -129,8 +133,8 @@ void main() {
       expect(parsed.revision, doc['revision']);
     });
 
-    test('rejects an unknown key (e.g. updatedBy before its step)', () {
-      final doc = fullDocument(overrides: {'updatedBy': 'device-1'});
+    test('rejects an unknown key', () {
+      final doc = fullDocument(overrides: {'quota': 999});
       expect(() => ShiftDocumentData.fromMap(doc), throwsArgumentError);
     });
 
@@ -209,6 +213,21 @@ void main() {
       expect(
         () => ShiftDocumentData.fromMap(
           fullDocument(overrides: {'localWorkDate': '09/04/2026'}),
+        ),
+        throwsArgumentError,
+      );
+    });
+
+    test('rejects a missing or empty updatedBy device id', () {
+      expect(
+        () => ShiftDocumentData.fromMap(
+          fullDocument(overrides: {'updatedBy': null}),
+        ),
+        throwsArgumentError,
+      );
+      expect(
+        () => ShiftDocumentData.fromMap(
+          fullDocument(overrides: {'updatedBy': ''}),
         ),
         throwsArgumentError,
       );
