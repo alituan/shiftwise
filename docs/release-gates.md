@@ -17,4 +17,6 @@
 - [ ] Privacy policy matches actual app behavior
 - [ ] Backup restore rehearsed
 - [ ] Monitoring, budgets, and kill switches verified in a live-adjacent environment
+- [ ] App Check enrollment and enforcement enabled on all private and cost-incurring callables (`writeShift`, `createParseJob`) once the production Firebase project exists — auth alone is the interim state (`docs/threat-model.md`)
+- [ ] Least-privilege service accounts scoped per Cloud Function, not one shared over-privileged identity (`docs/threat-model.md`)
 - [ ] No secrets present in the shipped app bundle
