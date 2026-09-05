@@ -4,7 +4,7 @@
   "scripts": {
     "setup": {
       "enabled": true,
-      "command": "mise install && flutter pub get && (command -v java >/dev/null || sh -c 'apt-get update -qq >/dev/null && apt-get install -y -qq default-jre-headless') && (command -v firebase >/dev/null || npm install -g --silent firebase-tools)"
+      "command": "mise install && flutter pub get && (command -v java >/dev/null || sh -c 'apt-get update -qq >/dev/null && apt-get install -y -qq default-jre-headless') && (command -v firebase >/dev/null || npm install -g --silent firebase-tools) && (test -x /home/hoplite/android-sdk/platform-tools/adb || sh -c 'mkdir -p /home/hoplite/android-sdk/cmdline-tools && curl -sSLo /tmp/tools.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip && unzip -q /tmp/tools.zip -d /home/hoplite/android-sdk/cmdline-tools && (mv /home/hoplite/android-sdk/cmdline-tools/cmdline-tools /home/hoplite/android-sdk/cmdline-tools/latest 2>/dev/null || true) && yes | /home/hoplite/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses >/dev/null && /home/hoplite/android-sdk/cmdline-tools/latest/bin/sdkmanager platform-tools \"platforms;android-36\" \"build-tools;36.0.0\" >/dev/null') && (command -v javac >/dev/null || apt-get install -y -qq openjdk-21-jdk-headless) && (flutter config --android-sdk /home/hoplite/android-sdk || true)"
     },
     "run": {"enabled": true, "command": "flutter run -d web-server --web-port 3000 --web-hostname 0.0.0.0"},
     "archive": {"enabled": true, "command": null},
