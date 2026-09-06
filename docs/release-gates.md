@@ -20,3 +20,4 @@
 - [ ] App Check enrollment and enforcement enabled on all private and cost-incurring callables (`writeShift`, `createParseJob`) once the production Firebase project exists — auth alone is the interim state; native App Check providers (Play Integrity / DeviceCheck) since the app uses React Native Firebase (`docs/threat-model.md`)
 - [ ] Least-privilege service accounts scoped per Cloud Function, not one shared over-privileged identity (`docs/threat-model.md`)
 - [ ] No secrets present in the shipped app bundle
+- [ ] Replace hand-approximated Google G SVG with official asset from developers.google.com/identity/branding-guidelines
