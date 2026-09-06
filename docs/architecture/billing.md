@@ -17,7 +17,7 @@ App requests checkout
 → app reads entitlement (read-only)
 ```
 
-**The Flutter app never chooses an arbitrary price, never marks a purchase as successful client-side, and never writes entitlement state.** This is enforced by Firestore rules (`docs/architecture/data-model.md` — entitlements collection is server-owned) plus Cloud Functions re-verification, not just by the app's UI not offering the option.
+**The React Native app never chooses an arbitrary price, never marks a purchase as successful client-side, and never writes entitlement state.** This is enforced by Firestore rules (`docs/architecture/data-model.md` — entitlements collection is server-owned) plus Cloud Functions re-verification, not just by the app's UI not offering the option.
 
 Handle explicitly: purchase, renewal, expiry, cancellation, refund, failed payment, grace period (if the provider supports one), plan change, duplicate/out-of-order webhook events, and identity mapping between provider customer ID and Firebase UID.
 

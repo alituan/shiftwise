@@ -1,0 +1,6 @@
+node_modules/
+.expo/
+dist/
+uniwind-types.d.ts
+ios/
+android/

@@ -1,0 +1,56 @@
+@import 'tailwindcss';
+@import 'uniwind';
+
+/*
+ * Design tokens — dark-first design-system rebuild (owner spec,
+ * 2026-09-06). No light mode for now; system override comes later. This
+ * REPLACES the Phase 1 light/dark palette carried over from the Flutter
+ * app -- token names like `ink`/`surface`/`primary` are reused here with
+ * new values and, in `surface`'s case, a different semantic meaning (was
+ * "screen background", now "glass tint"). See docs/design/tokens.md and
+ * src/design/tokens.ts, which this file mirrors exactly -- keep all three
+ * in sync.
+ *
+ * These are plain @theme constants, not @layer theme light/dark @variant
+ * blocks: there is no per-theme variation yet, so wrapping them in a
+ * variant would trip Uniwind's "every theme must declare the same
+ * variables" check for no reason. Revisit this when a light mode and
+ * system-follow override are actually built.
+ */
+@theme {
+  --font-sans: 'Inter';
+
+  --color-background: #0a0a0b;
+  --color-surface: rgba(255, 255, 255, 0.06);
+  --color-surface-border: rgba(255, 255, 255, 0.12);
+  --color-ink: #ffffff;
+  --color-ink-secondary: rgba(255, 255, 255, 0.55);
+  --color-primary: #3b6ef8;
+  --color-primary-glow: rgba(59, 110, 248, 0.35);
+  --color-concern: #f59e0b;
+  --color-confirmed: #10b981;
+  --color-critical: #ef4444;
+
+  --color-bottom-sheet-surface: #141416;
+  --color-bottom-sheet-handle: rgba(255, 255, 255, 0.2);
+  --color-bottom-sheet-border: rgba(255, 255, 255, 0.1);
+  --color-bottom-nav-background: rgba(10, 10, 11, 0.92);
+  --color-bottom-nav-border: rgba(255, 255, 255, 0.08);
+  --color-bottom-nav-inactive: rgba(255, 255, 255, 0.35);
+
+  --text-hero: 34px;
+  --text-title: 20px;
+  --text-body: 16px;
+  --text-secondary: 14px;
+  --text-label: 12px;
+
+  --spacing-2xs: 4px;
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+
+  --radius-button: 14px;
+}

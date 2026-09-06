@@ -15,12 +15,12 @@
 - Firestore/Storage rules are authoritative for any direct SDK call from the app — **this is the only security boundary**, there is no server-rendered layer behind it like a traditional web app might have.
 - App Check protects supported Firebase resources from abuse.
 - Cloud Functions re-check UID, entitlement, job ownership, quota, and schema server-side on every privileged call — never trust a UID, entitlement, price, rate, or path submitted by the client.
-- Route guards in `go_router` improve UX (redirect unauthenticated users) but are not a security control — treat them purely as navigation convenience.
+- Route guards in `expo-router` improve UX (redirect unauthenticated users) but are not a security control — treat them purely as navigation convenience.
 
 ## Browser/app storage
 
-- No secrets or privileged tokens in local storage of any kind (`SharedPreferences`, on-disk caches).
-- Use Firestore's built-in offline persistence deliberately, not by default-and-forget.
+- No secrets or privileged tokens in local storage of any kind (`AsyncStorage`, MMKV, on-disk caches).
+- Use React Native Firebase's built-in Firestore offline persistence deliberately, not by default-and-forget (`docs/decisions/0001-migrate-flutter-to-react-native-expo.md` — the Firebase JS SDK cannot do this on RN).
 - Clear user-scoped local caches on logout.
 - Warn the user visibly about unsynced local changes before they could be lost (e.g. logout while offline with pending writes).
 

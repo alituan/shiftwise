@@ -2,12 +2,14 @@
 
 Work one phase at a time. Do not begin a later phase's work inside an earlier phase's PRs.
 
+> **Stack migration in progress (2026-09-05):** `docs/decisions/0001-migrate-flutter-to-react-native-expo.md`. The phase progress notes below (marked "Progress") describe the **pre-migration Flutter implementation**, preserved as historical record — that code is being rewritten, not ported, on React Native/Expo. A new migration phase sequence (0: docs, 1: Expo scaffold + CI parity, 2: domain port, 3: auth/Firestore/rules port, 4: design tokens + screens, 5: scan pipeline) runs alongside/inside the phase numbers below; each migration step restarts the relevant phase's work on the new stack rather than resuming Dart code.
+
 ### Phase 0 — Evidence and decisions
 Owner approves: segment, jurisdiction, currency, claims, AI-accuracy benchmark target, pay-calculation fixtures, retention policy, billing/merchant eligibility, unit economics.
 **Exit:** assumptions documented in `docs/scope.md`; benchmark and hand-verified pay calculations exist as fixtures.
 
 ### Phase 1 — Manual core (no AI, no auth-required cloud sync yet)
-Design tokens and theme (`docs/design/tokens.md`), app shell, `go_router` setup, Schedule screen with manual shift CRUD, local-only (guest) mode, basic pay display, golden-test baseline established.
+Design tokens and theme (`docs/design/tokens.md`), app shell, `expo-router` setup, Schedule screen with manual shift CRUD, local-only (guest) mode, basic pay display, visual-snapshot baseline established.
 **Exit:** manual flow works fully offline, on at least one real device per platform, no AI or cloud dependency.
 
 > **Known-open (2026-09-04):** the real-device exit criterion is unmet — Phase 1 is verified in the sandbox web preview and the unit/widget/golden suite only. Closing it with a real-device or emulator smoke test is a merge precondition, tracked here so it isn't lost under Phase 2 work.

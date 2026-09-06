@@ -30,7 +30,7 @@ Day cells show: time, job marker, concern marker (icon, not color-only).
 
 **Purpose:** photo → reviewable draft → confirmed shifts. AI never writes directly to confirmed data — see `docs/architecture/ai-import.md` for the full pipeline this screen drives.
 
-Flow: camera/file picker → crop to user's own row (`image_cropper`) → privacy/consent notice naming the AI processor → local preview → upload → queued/processing/review states → side-by-side crop-vs-extracted-result for review → explicit per-shift confirm.
+Flow: camera/file picker → crop to user's own row (`expo-image-picker`) → privacy/consent notice naming the AI processor → local preview → upload → queued/processing/review states → side-by-side crop-vs-extracted-result for review → explicit per-shift confirm.
 
 States: idle, capturing, cropping, uploading, queued, processing, review_required, confirmed, failed. Each needs distinct visual treatment — this maps directly to the job state machine in `docs/architecture/ai-import.md`, keep them in sync.
 
@@ -74,7 +74,7 @@ Never introduce a fifth size without updating this table first — see AGENTS.md
 
 ## Component inventory
 
-Every screen in this doc references one of these. Build each once in `lib/shared/widgets/`, reuse everywhere — don't let two screens invent two versions of the same component.
+Every screen in this doc references one of these. Build each once in `src/shared/components/`, reuse everywhere — don't let two screens invent two versions of the same component.
 
 | Component | Used on | Behavior notes |
 |---|---|---|

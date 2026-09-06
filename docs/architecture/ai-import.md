@@ -4,11 +4,11 @@
 
 AI is an input shortcut. It never becomes the source of truth and never writes directly to confirmed shifts. Every import requires explicit human confirmation, regardless of model confidence.
 
-## Client-side preprocessing (Flutter)
+## Client-side preprocessing (React Native / Expo)
 
 Before upload:
-- Crop to the user's own schedule row (`image_cropper`).
-- Re-encode to strip EXIF/location metadata (`image` package).
+- Crop to the user's own schedule row (`expo-image-picker`'s crop UI).
+- Re-encode to strip EXIF/location metadata (`expo-image-manipulator`).
 - Validate file type, size, dimensions, pixel count client-side.
 - Show the user exactly what crop will be uploaded before they consent.
 - Obtain explicit consent naming the AI processor and purpose.
